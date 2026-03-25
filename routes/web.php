@@ -10,7 +10,10 @@ Route::get('/jobs', function(){
     return 'Available jobs';
 })->name('jobs');
 
-Route::match(['get','post'],'/submit', function(){
-    return 'Submitted';
+Route::get('/posts/{id}', function(string $id){
+    return 'POST ' . $id;
 });
 
+Route::get('/users/{id}', function(string $id){
+    return 'User ' . $id;
+});
