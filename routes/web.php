@@ -11,22 +11,26 @@ Route::get('/jobs', function(){
     return 'Available jobs';
 })->name('jobs');
 
-Route::get('/posts/{id}', function(string $id){
-    return 'POST ' . $id;
+Route::get('/test', function(){
+    return response('HEllo world',200)-> header('Content-Type', 'text/html');
 });
 
-Route::get('/users/{id}', function(string $id){
-    return 'User ' . $id;
+Route::get('notFound', function(){
+    return response('not found', 400);
 });
 
-Route::get('/test', function(Request $request){
-    return [
-    'method' => $request -> method(),
-    'ip' => $request -> ip(),
-    'header' => $request -> header('Accept')
-    ];
+
+Route::get('/test2', function () {
+return response() -> json(['name'=> 'Koln'])->cookie('name', 'John', 60);
 });
 
-Route::get('/users', function(Request $request){
-    return $request -> query('name');
+
+Route::get('/download', function(){
+    return response() -> download(public_path('favicon.ico'));
+});
+
+
+Route::get('/read-cookie', function(Request $request){
+    $cookieValue = $request->cookie('name');
+    return response()->json(['cookie' => $cookieValue]);
 });
