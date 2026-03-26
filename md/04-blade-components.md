@@ -105,30 +105,64 @@ In the layout `<head>`:
 - `@vite()` includes assets processed by Vite (Laravel's default bundler).
 - This enables Tailwind CSS classes like `bg-gray-100`, `container`, `mx-auto`, etc.
 
+### Creating a Reusable NavLink Component with Props
+Instead of repeating the same `<a>` tag with active-link logic everywhere, extract it into a component:
+
+```bash
+php artisan make:component NavLink
+```
+
+**The view** (`resources/views/components/nav-link.blade.php`):
+```html
+@props(['url' => '/', 'active' => false, 'icon' => null])
+
+<a href="{{ $url }}" class="text-white hover:underline py-2 {{ $active ? 'text-yellow-500 font-bold' : '' }}">
+    @if ($icon)
+        <i class="fa fa-{{ $icon }} mr-1"></i>
+    @endif
+    {{ $slot }}
+</a>
+```
+
+**Using `@props`** — This Blade directive defines the component's accepted attributes with default values:
+- `@props(['url' => '/', 'active' => false, 'icon' => null])` declares three props.
+- Props with defaults are optional when using the component.
+- `{{ $slot }}` renders whatever content is placed between the opening and closing tags.
+
+**Using the component:**
+```html
+{{-- Simple link --}}
+<x-nav-link url="/jobs" :active="request()->is('jobs')">All Jobs</x-nav-link>
+
+{{-- With icon prop --}}
+<x-nav-link url="/dashboard" :active="request()->is('dashboard')" icon="gauge">
+    Dashboard
+</x-nav-link>
+```
+
+**Key details:**
+- `:active="..."` — The colon prefix (`:`) passes a **PHP expression** instead of a string. Without it, `active="request()->is('jobs')"` would pass the literal string `"request()->is('jobs')"`.
+- `icon="gauge"` — No colon needed here because we're passing a plain string, not a PHP expression.
+- `{{ $slot }}` — The text between `<x-nav-link>...</x-nav-link>` (e.g., "All Jobs").
+
 ### Useful Blade Helpers in Components
 ```php
 {{ url('/jobs') }}              {{-- Generate full URL --}}
 {{ request()->is('jobs') }}     {{-- Check if current path matches (returns bool) --}}
 ```
 
-These were used in the header for active-link highlighting:
-```html
-<a href="{{ url('/jobs') }}"
-   class="text-white hover:underline py-2 {{ request()->is('jobs') ? 'text-yellow-500 font-bold' : '' }}">
-    All Jobs
-</a>
-```
-
 ### File Organization After Migration
 ```
 app/View/Components/
 ├── Header.php               ← component class
-└── Layout.php               ← component class (renders layout.blade.php)
+├── Layout.php               ← component class (renders layout.blade.php)
+└── NavLink.php              ← component class for reusable nav links
 
 resources/views/
 ├── layout.blade.php          ← uses {{ $slot }} instead of @yield
 ├── components/
-│   └── header.blade.php      ← replaces partials/navbar.blade.php
+│   ├── header.blade.php      ← replaces partials/navbar.blade.php
+│   └── nav-link.blade.php   ← reusable nav link with props
 ├── pages/
 │   └── index.blade.php       ← uses <x-layout> instead of @extends
 └── jobs/
