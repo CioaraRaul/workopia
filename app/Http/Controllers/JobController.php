@@ -66,8 +66,10 @@ class JobController extends Controller
 
         // Handle file upload
         if ($request->hasFile('company_logo')) {
-            $path = $request->file('company_logo')->store('logos', 'public');
-            $validateData['company_logo'] = $path;
+            $file = $request->file('company_logo');
+            $filename = uniqid() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/logos'), $filename);
+            $validateData['company_logo'] = $filename;
         } else {
             unset($validateData['company_logo']);
         }
