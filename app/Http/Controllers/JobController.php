@@ -36,12 +36,43 @@ class JobController extends Controller
         $validateData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'salary' => 'required|integer|min:0',
+            'tags'=> 'nullable|string',
+            'job_type' => 'required|string',
+            'remote' => 'required|boolean',
+            'requirements' => 'nullable|string',
+            'benefits' => 'nullable|string',
+            'company_name' => 'required|string|max:255',
+            'company_description' => 'nullable|string',
+            'company_website' => 'nullable|url',
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'required|email',
+            'address' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'zipcode' => 'nullable|string|max:20',
+            'company_logo' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
-        Job::create([
-            'title' => $validateData['title'],
-            'description' => $validateData['description']
-        ]);
+        // Map form field 'tags' to DB column 'strings'
+        $validateData['strings'] = $validateData['tags'] ?? null;
+        unset($validateData['tags']);
+
+        // Convert job_type to lowercase to match DB enum values
+        $validateData['job_type'] = strtolower($validateData['job_type']);
+
+        //handle user id
+        $validateData['user_id'] = 1;
+
+        // Handle file upload
+        if ($request->hasFile('company_logo')) {
+            $path = $request->file('company_logo')->store('logos', 'public');
+            $validateData['company_logo'] = $path;
+        } else {
+            unset($validateData['company_logo']);
+        }
+
+        Job::create($validateData);
 
         return redirect()->route('jobs.index')->with('success', 'Job created successfully.');
     }
@@ -49,6 +80,7 @@ class JobController extends Controller
     /**
      * Display the specified resource.
      */
+
     public function show(Job $job):View
     {
         return view('jobs.show')->with('job',$job);

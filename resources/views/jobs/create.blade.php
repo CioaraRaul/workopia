@@ -4,6 +4,16 @@
         <h2 class="text-4xl text-center font-bold mb-4">
             Create Job Listing
         </h2>
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form method="POST" action="/jobs" enctype="multipart/form-data">
             @csrf
             <h2 class="text-2xl font-bold mb-6 text-center text-gray-500">
@@ -37,8 +47,8 @@
             ]" />
 
             <x-inputs.select id="remote" name="remote" label="Remote" :options="[
-                'false' => 'No',
-                'true' => 'Yes',
+                '0' => 'No',
+                '1' => 'Yes',
             ]" />
 
             <x-inputs.text id="address" name="address" label="Address" placeholder="123 Main St" />
@@ -59,10 +69,9 @@
                 placeholder="Company Description" />
 
             <x-inputs.text id="company_website" name="company_website" label="Company Website"
-                placeholder="Enter website" />
+                placeholder="Enter website" type="url" />
 
-            <x-inputs.text id="contact_phone" name="contact_phone" label="Contact Phone"
-                placeholder="Enter phone" />
+            <x-inputs.text id="contact_phone" name="contact_phone" label="Contact Phone" placeholder="Enter phone" />
 
             <x-inputs.text id="contact_email" name="contact_email" type="email" label="Contact Email"
                 placeholder="Email where you want to receive applications" />

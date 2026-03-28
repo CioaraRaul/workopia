@@ -31,7 +31,7 @@ class Job extends Model
         'company_description',
         'company_logo',
         'company_website',
-        'user_id '
+        'user_id'
     ];
 
     // Define the relationship with the User model
