@@ -3,8 +3,14 @@
 <div class="rounded-lg shadow-md bg-white p-4 flex flex-col justify-between h-full">
     <div>
         <div class="flex items-center mb-3">
-            <img src="{{ asset('images/logos/' . $job->company_logo) }}" alt="{{ $job->company_name }}"
-                class="w-10 h-10 object-contain rounded mr-3">
+            @if ($job->company_logo)
+                <img src="{{ asset('storage/logos/' . $job->company_logo) }}" alt="{{ $job->company_name }}"
+                    class="w-10 h-10 object-contain rounded mr-3">
+            @else
+                <div class="w-10 h-10 bg-gray-200 rounded mr-3 flex items-center justify-center text-gray-500 text-lg font-bold">
+                    {{ strtoupper(substr($job->company_name, 0, 1)) }}
+                </div>
+            @endif
             <div>
                 <h2 class="text-xl font-bold">{{ $job->title }}</h2>
                 <p class="text-sm text-gray-500">{{ ucfirst($job->job_type) }}</p>

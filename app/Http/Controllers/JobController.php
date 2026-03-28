@@ -68,12 +68,15 @@ class JobController extends Controller
         if ($request->hasFile('company_logo')) {
             $file = $request->file('company_logo');
             $filename = uniqid() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images/logos'), $filename);
+            $file->move(storage_path('app/public/logos'), $filename);
             $validateData['company_logo'] = $filename;
         } else {
             unset($validateData['company_logo']);
         }
 
+
+
+        // Create the job
         Job::create($validateData);
 
         return redirect()->route('jobs.index')->with('success', 'Job created successfully.');
