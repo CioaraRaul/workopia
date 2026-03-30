@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class JobController extends Controller
@@ -70,7 +71,7 @@ class JobController extends Controller
         // Convert job_type to lowercase to match DB enum values
         $validateData['job_type'] = strtolower($validateData['job_type']);
 
-        // $validateData['user_id'] = auth()->id();
+        $validateData['user_id'] = Auth::id();
 
         // Handle file upload
         if ($request->hasFile('company_logo')) {
