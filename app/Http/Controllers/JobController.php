@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class JobController extends Controller
@@ -61,8 +60,7 @@ class JobController extends Controller
         // Convert job_type to lowercase to match DB enum values
         $validateData['job_type'] = strtolower($validateData['job_type']);
 
-        //handle user id
-        $validateData['user_id'] = 1;
+        $validateData['user_id'] = auth()->id();
 
         // Handle file upload
         if ($request->hasFile('company_logo')) {
@@ -94,17 +92,57 @@ class JobController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id) :string
+    public function edit(Job $job) : View
     {
-        return 'edit';
+        return view('jobs.edit')->with('job', $job);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) :string
+    public function update(Request $request, Job $job) : RedirectResponse
     {
-        return 'update';
+        $validateData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'salary' => 'required|integer|min:0',
+            'tags'=> 'nullable|string',
+            'job_type' => 'required|string',
+            'remote' => 'required|boolean',
+            'requirements' => 'nullable|string',
+            'benefits' => 'nullable|string',
+            'company_name' => 'required|string|max:255',
+            'company_description' => 'nullable|string',
+            'company_website' => 'nullable|url',
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'required|email',
+            'address' => 'nullable|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'zipcode' => 'nullable|string|max:20',
+            'company_logo' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
+        ]);
+
+        // Map form field 'tags' to DB column 'strings'
+        $validateData['strings'] = $validateData['tags'] ?? null;
+        unset($validateData['tags']);
+
+        // Convert job_type to lowercase to match DB enum values
+        $validateData['job_type'] = strtolower($validateData['job_type']);
+
+        // Handle file upload
+        if ($request->hasFile('company_logo')) {
+            $file = $request->file('company_logo');
+            $filename = uniqid() . '_' . $file->getClientOriginalName();
+            $file->move(storage_path('app/public/logos'), $filename);
+            $validateData['company_logo'] = $filename;
+        } else {
+            unset($validateData['company_logo']);
+        }
+
+        $job->update($validateData);
+
+        return redirect()->route('jobs.show', $job->id)->with('success', 'Job updated successfully.');
     }
 
     /**
