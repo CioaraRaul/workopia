@@ -10,6 +10,7 @@ use Illuminate\View\View;
 
 class JobController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -107,6 +108,8 @@ class JobController extends Controller
      */
     public function edit(Job $job) : View
     {
+        $this->authorize('update', $job);
+
         return view('jobs.edit')->with('job', $job);
     }
 
@@ -118,6 +121,8 @@ class JobController extends Controller
     // @route PUT /jobs/{id}
     public function update(Request $request, Job $job) : RedirectResponse
     {
+        $this->authorize('update', $job);
+
         $validateData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -169,10 +174,8 @@ class JobController extends Controller
     // @route DELETE /jobs/{id}
     public function destroy(Job $job): RedirectResponse
     {
-        // @todo Add authorization check when auth is fully implemented
-        // if ($job->user_id !== auth()->id()) {
-        //     return redirect()->route('jobs.index')->with('error', 'You are not authorized to delete this job.');
-        // }
+        $this->authorize('delete', $job);
+
 
         // Delete company logo if it exists
         if ($job->company_logo) {
