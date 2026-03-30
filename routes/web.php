@@ -32,8 +32,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('/dashboard', function () {
-        return 'Dashboard - Coming Soon';
-    })->name('dashboard');
 });
 
