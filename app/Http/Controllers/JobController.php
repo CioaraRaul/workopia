@@ -12,6 +12,10 @@ class JobController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    // @desc Show all jobs
+    // @route GET /jobs
+
     public function index(): View
     {
         $jobs= Job::all();
@@ -22,6 +26,9 @@ class JobController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    // @desc Show job creation form
+    // @route GET /jobs/create
+
     public function create():View
     {
         return view('jobs.create');
@@ -30,6 +37,8 @@ class JobController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // @desc Handle job creation form submission
+    // @route POST /jobs
     public function store(Request $request): RedirectResponse
     {
         $validateData = $request->validate([
@@ -60,7 +69,7 @@ class JobController extends Controller
         // Convert job_type to lowercase to match DB enum values
         $validateData['job_type'] = strtolower($validateData['job_type']);
 
-        $validateData['user_id'] = auth()->id();
+        // $validateData['user_id'] = auth()->id();
 
         // Handle file upload
         if ($request->hasFile('company_logo')) {
@@ -84,6 +93,8 @@ class JobController extends Controller
      * Display the specified resource.
      */
 
+    // @desc Show job details
+    // @route GET /jobs/{id}
     public function show(Job $job):View
     {
         return view('jobs.show')->with('job',$job);
@@ -100,6 +111,9 @@ class JobController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
+    // @desc Handle job edit form submission
+    // @route PUT /jobs/{id}
     public function update(Request $request, Job $job) : RedirectResponse
     {
         $validateData = $request->validate([
@@ -148,6 +162,9 @@ class JobController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
+    // @desc Handle job deletion
+    // @route DELETE /jobs/{id}
     public function destroy(Job $job): RedirectResponse
     {
         // @todo Add authorization check when auth is fully implemented
