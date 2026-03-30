@@ -148,9 +148,24 @@ class JobController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id):string
+    public function destroy(Job $job): RedirectResponse
     {
-        return 'destroy';
+        // @todo Add authorization check when auth is fully implemented
+        // if ($job->user_id !== auth()->id()) {
+        //     return redirect()->route('jobs.index')->with('error', 'You are not authorized to delete this job.');
+        // }
+
+        // Delete company logo if it exists
+        if ($job->company_logo) {
+            $logoPath = storage_path('app/public/logos/' . $job->company_logo);
+            if (file_exists($logoPath)) {
+                unlink($logoPath);
+            }
+        }
+
+        $job->delete();
+
+        return redirect()->route('jobs.index')->with('success', 'Job deleted successfully.');
     }
 
 }
