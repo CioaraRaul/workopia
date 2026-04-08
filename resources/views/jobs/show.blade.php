@@ -73,7 +73,7 @@
                         </p>
                     </div>
                 @endif
-                <div x-data="{ open: false }">
+                <div x-cloak x-data="{ open: false }">
                     <button
                         @click="open = true"
                         class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-gray-700 bg-gray-100 hover:bg-gray-200"
@@ -127,6 +127,7 @@
             @endif
 
             {{-- Bookmark button --}}
+            @php $isBookmarked = auth()->check() && auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists(); @endphp
             @php $isBookmarked = auth()->check() && auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists(); @endphp
             <form method="POST" action="{{ $isBookmarked ? route('bookmarks.destroy', $job->id) : route('bookmarks.store', $job->id) }}">
                 @csrf

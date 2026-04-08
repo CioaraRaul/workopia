@@ -54,5 +54,16 @@
                 Profile</button>
         </form>
     </div>
+    <div class="bg-white p-8 rounded-lg shadow-md w-full mt-6">
+        <h2 class="text-2xl font-bold mb-4">Applicants</h2>
+        @foreach ($jobs as $job)
+            @if ($job->applicants->isNotEmpty())
+                <h3 class="text-lg font-semibold mt-4">{{ $job->title }}</h3>
+                @foreach ($job->applicants as $applicant)
+                    <p class="text-gray-600">{{ $applicant->full_name }} - {{ $applicant->contact_info }}</p>
+                @endforeach
+            @endif
+        @endforeach
+    </div>
 </x-layout>
 
