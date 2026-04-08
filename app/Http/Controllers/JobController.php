@@ -20,7 +20,7 @@ class JobController extends Controller
 
     public function index(): View
     {
-        $jobs= Job::paginate(8);
+        $jobs= Job::latest()->paginate(8);
 
         return view('jobs.index', compact('jobs'));
     }
