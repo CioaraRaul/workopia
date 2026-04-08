@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
+    Route::post('/bookmarks/{job}', [BookmarkController::class,'store'])->name('bookmarks.store');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
